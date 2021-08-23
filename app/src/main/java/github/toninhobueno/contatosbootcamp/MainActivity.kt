@@ -6,12 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
 import androidx.core.app.ActivityCompat
-import java.util.jar.Attributes
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 
 class MainActivity : AppCompatActivity() {
 
     val REQUEST_CONTACT = 1
+    val LINEAR_LAYOUT_VERTICAL = 1
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,5 +56,13 @@ class MainActivity : AppCompatActivity() {
             }
             cursor.close()
         }
+
+        val adapter = ContactAdapter(contactList)
+        val contactRecycleView = findViewById<RecyclerView>(R.id.contacts_recycle_view)
+
+        contactRecycleView.layoutManager = LinearLayoutManager(this, LINEAR_LAYOUT_VERTICAL,false)
+        contactRecycleView.adapter = adapter
+
+
     }
 }
