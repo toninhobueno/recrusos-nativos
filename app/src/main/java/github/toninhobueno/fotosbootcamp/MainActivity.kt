@@ -1,6 +1,8 @@
 package github.toninhobueno.fotosbootcamp
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +11,12 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+
+
+    companion object{
+        private val PERMISSION_CODE_IMAGE_PICK = 1000
+        private val IMAGE_PICK_CODE = 1001
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -20,12 +28,12 @@ class MainActivity : AppCompatActivity() {
                 if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_DENIED){
                     val permission = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE)
-                    requestPermissions(permission,PERMISSION_CODE)
+                    requestPermissions(permission,PERMISSION_CODE_IMAGE_PICK)
+                }else {
+                    pickImageFromGalery()
                 }
 
-            }
-            else {
-                pickImageFromGalery()
+
             }
         }
     }
@@ -37,8 +45,8 @@ class MainActivity : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when(requestCode) {
-            PERMISSION_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            PERMISSION_CODE_IMAGE_PICK -> {
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     pickImageFromGalery()
                 }else{
                     Toast.makeText(this,"Permissão Negada",Toast.LENGTH_LONG).show()
@@ -52,10 +60,18 @@ class MainActivity : AppCompatActivity() {
 
     private fun pickImageFromGalery() {
 
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent,IMAGE_PICK_CODE)
+
     }
 
-    companion object{
-        private val PERMISSION_CODE = 1000
-        private val IMAGE_PICK_CODE = 1001
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE ){
+            Image_view.setImageURI(data?.data)
+        }
     }
+
+
 }

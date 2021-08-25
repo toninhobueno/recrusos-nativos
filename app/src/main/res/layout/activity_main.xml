@@ -12,8 +12,8 @@
         android:id="@+id/Image_view"
         android:scaleType="centerCrop"
         android:contentDescription="@string/image_text"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
+        android:layout_width="370dp"
+        android:layout_height="370dp"
         android:src="@drawable/image"
 
 
@@ -26,6 +26,17 @@
         android:padding="10dp"
         android:text="@string/image_selected"
         android:layout_margin="16dp"
+        style="@style/Widget.AppCompat.Button.Colored"
+        />
+
+    <Button
+        android:id="@+id/open_camera_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:text="@string/take_picture"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         style="@style/Widget.AppCompat.Button.Colored"
         />
 
