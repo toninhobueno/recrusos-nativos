@@ -1,6 +1,8 @@
 package github.toninhobueno.bootcamp_location
 
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -13,7 +15,9 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
+import com.google.android.gms.maps.model.MarkerOptions
 import github.toninhobueno.bootcamp_location.databinding.ActivityMapsBinding
+import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback , GoogleMap.OnMarkerClickListener {
 
@@ -75,6 +79,8 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback , GoogleMap.OnMarke
 
         map.isMyLocationEnabled = true
 
+        map.mapType = GoogleMap.MAP_TYPE_HYBRID
+
         fusedLocationClient.lastLocation.addOnSuccessListener (this) { location ->
 
             if (location != null ){
@@ -82,10 +88,43 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback , GoogleMap.OnMarke
                 lastLocation = location
 
                 val currentLatLng = LatLng(location.latitude,location.longitude)
+                placeMarkerOnMap (currentLatLng)
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLatLng,12f))
             }
 
         }
+    }
+
+        private fun placeMarkerOnMap (location : LatLng){
+            val marker = MarkerOptions().position(location)
+
+            //marker.icon(BitmapDescriptorFactory.fromBitmap(BitmapFactory.decodeResource(resources,R.mipmap.ic_user_location)))
+
+            val titleStr = getAddress(location)
+            marker.title(titleStr)
+
+
+
+            map.addMarker(marker)
+        }
+
+
+    private fun getAddress(latLng : LatLng) : String {
+        val addresses : List<Address>
+        val geocoder  = Geocoder(this, Locale.getDefault())
+
+
+        addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude,1)
+
+        val address = addresses[0].getAddressLine(0)
+        val city = addresses[0].locality
+        val state = addresses[0].adminArea
+        val country = addresses[0].countryName
+        val postalCode = addresses[0].postalCode
+
+
+        return address
+
     }
 
 
